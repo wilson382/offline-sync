@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <!-- <script async src="https://www.googletagmanager.com/gtag/js?id=G-66WCRSZJLR"></script> -->
+    <!-- <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        dataLayer.push(arguments);
+      }
+      gtag("js", new Date());
+
+      gtag("config", "G-66WCRSZJLR");
+    </script> -->
+    <!-- End Google Tag Manager -->
+
+    <style>
+      .full-page-loader {
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        right: 0;
+        left: 0;
+        bottom: 0;
+      }
+
+      .full-page-loader > img {
+        animation: 1.8s infinite heartbeat;
+      }
+
+      @keyframes heartbeat {
+        0% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.05);
+        }
+        50% {
+          transform: scale(1);
+        }
+        75% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+    </style>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+
+    <title>WPrestamos | Aplicacion de finanzas para rutas de prestamo!</title>
+    <meta name="description" content="Aplicacion de cobro para rutas de prestamo!" />
+    <!-- <link rel="preload" as="fetch" /> -->
+    <link rel="manifest" href="/manifest.json" />
+
+    <!-- This one seens to work correctly.
+      https://realfavicongenerator.net/ this is nice wbesite to test different browser icon images-->
+
+    <link rel="preconnect" href="https://o637002.ingest.sentry.io" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5" />
+    <meta name="apple-mobile-web-app-title" content="WPrestamos" />
+
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="msapplication-TileColor" content="#da532c" />
+    <meta name="theme-color" content="#ffffff" />
+
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root">
+      <div class="full-page-loader">
+        <img width="192" height="192" src="/android-chrome-192x192.png" alt="App logo" />
+        <h3>Por favor, espere...</h3>
+      </div>
+    </div>
+
+    <!--
+    <script>
+      // Check that service workers are supported
+      if ("serviceWorker" in navigator) {
+        // Use the window load event to keep the page load performant
+        window.addEventListener("load", () => {
+          navigator.serviceWorker
+            .register("/sw.js")
+            .then((res) => {
+              console.log("ServiceWorker successfully registred from index.html!");
+            })
+            .catch((err) => {
+              console.log("There was an error registering ServiceWorker", err);
+            });
+        });
+      }
+    </script> -->
+    <script type="module" src="/src/index.jsx"></script>
+  </body>
+</html>
