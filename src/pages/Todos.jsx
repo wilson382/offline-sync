@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import Typography from "@material-ui/core/Typography";
+import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import Loading from "../components/Loading";
 import { getUniqueID } from "../functions";
 import { useSelector, useDispatch } from "react-redux";
 import {
   createTodo,
+  resetTodos,
   selectError,
   selectStatus,
   selectTodos,
@@ -49,6 +51,11 @@ const Todos = () => {
     alert.success("nova tarefa criada!", { position: "bottom center" });
   };
 
+  const handleTodosReset = () => {
+    dispatch(resetTodos());
+    alert.error("Tarefa excluída!", { position: "bottom center" });
+  };
+
   const handleTodosDelete = () => {
     dispatch(thunkTodosDelete());
     alert.error("Todas as tarefas excluídas!", { position: "bottom center" });
@@ -56,16 +63,25 @@ const Todos = () => {
 
   return (
     <div className="container mt-3 mb-5">
-      <Box component={"div"} paddingTop={3} paddingBottom={3}>
+      <Box component={"div"} paddingTop={3} paddingBottom={2}>
         <Button fullWidth variant="contained" color="primary" onClick={handleTodoCreate}>
           Criar nova tarefa
         </Button>
       </Box>
 
       <Box component={"div"} paddingBottom={5}>
-        <Button fullWidth variant="contained" color="secondary" onClick={handleTodosDelete}>
-          excluir nova tarefa
-        </Button>
+        <Grid container spacing={1}>
+          <Grid item xs={6}>
+            <Button size="small" fullWidth variant="outlined" color="secondary" onClick={handleTodosReset}>
+              Excluir tarefas
+            </Button>
+          </Grid>
+          <Grid item xs={6}>
+            <Button size="small" fullWidth variant="contained" color="secondary" onClick={handleTodosDelete}>
+              Excluir tarefas
+            </Button>
+          </Grid>
+        </Grid>
       </Box>
 
       <Typography variant="h6" component="h4" gutterBottom>

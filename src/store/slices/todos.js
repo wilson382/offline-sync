@@ -25,6 +25,7 @@ export const todos = createSlice({
   name: "todos",
   initialState,
   reducers: {
+    resetTodos: () => initialState,
     createTodo: {
       reducer: (state, action) => {
         state.todos.push({ ...action.payload.postData, completed: "0" });
@@ -52,9 +53,7 @@ export const todos = createSlice({
   },
   extraReducers(builder) {
     builder
-      .addCase(thunkTodosDelete.fulfilled, (state) => {
-        return { ...initialState };
-      })
+      .addCase(thunkTodosDelete.fulfilled, () => initialState)
       .addCase(thunkTodosFetch.pending, (state) => {
         state.status = "loading";
       })
