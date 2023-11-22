@@ -2,8 +2,17 @@ import { createSlice } from "@reduxjs/toolkit";
 import { createTodo } from "./todos";
 
 const initialState = {
-  history: [], //Isso mantém um registro de todas as ações despachadas
-  queues: [], //Isso mantém todas as solicitações pendentes não atendidas. Essas solicitações são exibidas na página /sincronização
+  /**
+   * Isso mantém um registro de todas as ações despachadas, nunca exclua desta coleção.
+   * Quando o usuário sai, essa coleção é enviada para o servidor e cada item é consultado
+   * no banco de dados, para saber se há alguma perda de dados.
+   */
+  history: [],
+  /**
+   * Isso mantém quaisquer solicitações pendentes não atendidas. Essas solicitações são exibidas na página /sync,
+   * é como uma cópia da caixa de saída redux-offline, mas mais fácil de usar.
+   */
+  queues: [],
   totalQueues: 0, //Todos os dados off-line pendentes para serem salvos
 };
 
@@ -18,9 +27,12 @@ export const queuesSlice = createSlice({
   },
   extraReducers(builder) {
     builder.addCase(createTodo.type, (state, { payload }) => {
+      //Sempre que uma ação for despachada, gostaria de saber se foi feita online ou offline. Não tenho certeza se este é o lugar certo
+      const network = "online/offline";
       state.history.push({
         syncronization_id: payload.syncProps.syncronization_id,
         type: payload.syncProps.syncType,
+        network,
       });
 
       state.queues.push({

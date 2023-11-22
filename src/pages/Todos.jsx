@@ -75,11 +75,17 @@ const Todos = () => {
             <Button size="small" fullWidth variant="outlined" color="secondary" onClick={handleTodosReset}>
               Excluir tarefas
             </Button>
+            <Typography variant="body2" align="center">
+              Apague tudo e recomece (Client)
+            </Typography>
           </Grid>
           <Grid item xs={6}>
             <Button size="small" fullWidth variant="contained" color="secondary" onClick={handleTodosDelete}>
               Excluir tarefas
             </Button>
+            <Typography variant="body2" align="center">
+              Apague tudo e recomece (Remote)
+            </Typography>
           </Grid>
         </Grid>
       </Box>
