@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import { selectQueues, selectTotalQueues } from "../store/slices/queues";
 import { BsCloudCheck } from "react-icons/bs";
 
-const Syncronization = () => {
+const Queues = () => {
   const queues = useSelector(selectQueues);
   const queuesTotal = useSelector(selectTotalQueues);
 
@@ -57,4 +57,4 @@ const Syncronization = () => {
   );
 };
 
-export default Syncronization;
+export default Queues;

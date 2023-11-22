@@ -55,7 +55,7 @@ export default function Drawer() {
 
           {+totalQueues > 0 && (
             <div>
-              <IconButton aria-haspopup="true" onClick={() => history.push("/syncronization")} color="inherit">
+              <IconButton aria-haspopup="true" onClick={() => history.push("/queues")} color="inherit">
                 <Badge overlap="rectangular" badgeContent={+totalQueues} color="primary">
                   <BsCloudArrowUpFill size="1.1em" />
                 </Badge>
