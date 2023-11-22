@@ -5,6 +5,7 @@ import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import { BsCloudArrowUpFill } from "react-icons/bs";
 import Badge from "@material-ui/core/Badge";
+import InternetConection from "./InternetConection";
 import { useSelector } from "react-redux";
 import { selectTotalQueues } from "../store/slices/queues";
 import { useHistory } from "react-router-dom";
@@ -44,6 +45,8 @@ export default function Drawer() {
 
   return (
     <div className={classes.grow}>
+      <InternetConection />
+
       <AppBar style={{ marginLeft: -1, marginTop: -1 }} position="static" color="secondary">
         <Toolbar>
           <Typography onClick={() => history.push("/")} className={classes.title2} variant="h6" noWrap>
