@@ -7,15 +7,6 @@
       "hosting": {
         "testing": [
           "wprestamos-cobro-testing"
-        ],
-        "production": [
-          "cobro2023"
-        ],
-        "staging": [
-          "wprestamos-cobro-stagingv2"
-        ],
-        "beta": [
-          "wprestamos-cobro-betav2"
         ]
       }
     }
