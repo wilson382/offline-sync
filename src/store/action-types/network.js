@@ -1,0 +1,3 @@
+export const CheckNetworkActionTypes = {
+  FETCH_CHECK_NETWORK_CONNECTION: "[NETWORK] FETCH_CHECK_NETWORK_CONNECTION",
+};

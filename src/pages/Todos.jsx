@@ -6,8 +6,6 @@ import Loading from "../components/Loading";
 import { getUniqueID } from "../functions";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  createTodo,
-  resetTodos,
   selectError,
   selectStatus,
   selectTodos,
@@ -16,6 +14,8 @@ import {
 } from "../store/slices/todos";
 import { useAlert } from "react-alert";
 import Box from "@material-ui/core/Box";
+import { TodosActionTypes } from "../store/action-types";
+import { RESET_STATE } from "@redux-offline/redux-offline/lib/constants";
 
 const Todos = () => {
   const alert = useAlert();
@@ -47,12 +47,34 @@ const Todos = () => {
       title: "tarefa " + data_id,
     };
 
-    dispatch(createTodo({ postData: todo, data_id, syncronization_id }));
-    alert.success("nova tarefa criada!", { position: "bottom center" });
+    // dispatch(
+    //   createTodo({
+    //     postData: todo,
+    //     data_id,
+    //     syncronization_id,
+    //     onSuccess: alert.success,
+    //     onError: alert.error,
+    //     onInfo: alert.info,
+    //   })
+    // );
+    dispatch({
+      type: TodosActionTypes.CREATE_TODO_STARTED,
+      payload: {
+        postData: todo,
+        data_id,
+        syncronization_id,
+        onSuccess: alert.success,
+        onError: alert.error,
+        onInfo: alert.info,
+      },
+    });
+    // alert.success("nova tarefa criada!", { position: "bottom center" });
   };
 
   const handleTodosReset = () => {
-    dispatch(resetTodos());
+    dispatch({
+      type: RESET_STATE,
+    });
     alert.error("Tarefa excluída!", { position: "bottom center" });
   };
 
@@ -64,7 +86,12 @@ const Todos = () => {
   return (
     <div className="container mt-3 mb-5">
       <Box component={"div"} paddingTop={3} paddingBottom={2}>
-        <Button fullWidth variant="contained" color="primary" onClick={handleTodoCreate}>
+        <Button
+          fullWidth
+          variant="contained"
+          color="primary"
+          onClick={handleTodoCreate}
+        >
           Criar nova tarefa
         </Button>
       </Box>
@@ -72,7 +99,13 @@ const Todos = () => {
       <Box component={"div"} paddingBottom={5}>
         <Grid container spacing={1}>
           <Grid item xs={6}>
-            <Button size="small" fullWidth variant="outlined" color="secondary" onClick={handleTodosReset}>
+            <Button
+              size="small"
+              fullWidth
+              variant="outlined"
+              color="secondary"
+              onClick={handleTodosReset}
+            >
               Excluir tarefas
             </Button>
             <Typography variant="body2" align="center">
@@ -80,7 +113,13 @@ const Todos = () => {
             </Typography>
           </Grid>
           <Grid item xs={6}>
-            <Button size="small" fullWidth variant="contained" color="secondary" onClick={handleTodosDelete}>
+            <Button
+              size="small"
+              fullWidth
+              variant="contained"
+              color="secondary"
+              onClick={handleTodosDelete}
+            >
               Excluir tarefas
             </Button>
             <Typography variant="body2" align="center">

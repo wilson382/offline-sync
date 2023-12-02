@@ -2,12 +2,16 @@ import Typography from "@material-ui/core/Typography";
 import Box from "@material-ui/core/Box";
 import Divider from "@material-ui/core/Divider";
 import { useSelector } from "react-redux";
-import { selectQueues, selectTotalQueues } from "../store/slices/queues";
 import { BsCloudCheck } from "react-icons/bs";
 
 const Queues = () => {
-  const queues = useSelector(selectQueues);
-  const queuesTotal = useSelector(selectTotalQueues);
+  const { offline } = useSelector((state) => {
+    return {
+      offline: state.offline,
+    };
+  });
+  const queues = [...offline.outbox.map((x) => x.payload)];
+  const queuesTotal = offline.outbox.length;
 
   if (queuesTotal === 0)
     return (
@@ -20,7 +24,8 @@ const Queues = () => {
           Nenhum dado pendente!
         </Typography>
         <Typography variant="body1">
-          No momento não há dados pendentes, todos os dados foram salvos no aplicativo central para que seguro.
+          No momento não há dados pendentes, todos os dados foram salvos no
+          aplicativo central para que seguro.
         </Typography>
       </div>
     );
@@ -32,9 +37,9 @@ const Queues = () => {
       </Typography>
       <div style={{ maxHeight: 500, width: "100%", overflow: "scroll" }}>
         {queues.map((x) => (
-          <Box key={x.syncronization_id} component={"div"} p={1}>
+          <Box key={x.id} component={"div"} p={1}>
             <Typography variant="h6" className="pl-2" gutterBottom>
-              {x.syncTitle}
+              {x.title}
             </Typography>
 
             {x.syncName && (
@@ -43,11 +48,13 @@ const Queues = () => {
               </Typography>
             )}
 
-            {x.error && (
-              <Typography variant="body2" className="pl-2 text-danger" gutterBottom>
-                No. tentativas {x.triesCount} | {x.error}
-              </Typography>
-            )}
+            <Typography
+              variant="body2"
+              className="pl-2 text-danger"
+              gutterBottom
+            >
+              No. tentativas {offline.retryCount}
+            </Typography>
 
             <Divider />
           </Box>
