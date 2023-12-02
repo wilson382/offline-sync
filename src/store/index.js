@@ -16,14 +16,13 @@ import {
   initMessageListener,
 } from "redux-state-sync";
 import autoMergeLevel2 from "redux-persist/lib/stateReconciler/autoMergeLevel2";
-import queues from "./slices/queues";
-import todos from "./slices/todos";
 import { localStorageReduxPersist } from "@/config";
 import { offline } from "@redux-offline/redux-offline";
 import createSagaMiddleware from "redux-saga";
 import { rootSaga } from "./sagas";
 import { networkMiddleware } from "./middleware";
 import offlineConfig from "@redux-offline/redux-offline/lib/defaults";
+import { todoReducer } from "./sagas/todos/reducer";
 
 const persistVersion = 9;
 const persistConfig = {
@@ -47,8 +46,8 @@ const customConfig = {
 const offlineEnhanceStore = offline(customConfig);
 
 const reducers = combineReducers({
-  queues, // file
-  todos, //tarefa
+  // todos, //tarefa
+  todos: todoReducer,
 });
 
 const sagaMiddleware = createSagaMiddleware();

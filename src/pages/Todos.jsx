@@ -6,8 +6,6 @@ import Loading from "../components/Loading";
 import { getUniqueID } from "../functions";
 import { useSelector, useDispatch } from "react-redux";
 import {
-  createTodo,
-  resetTodos,
   selectError,
   selectStatus,
   selectTodos,
@@ -16,6 +14,8 @@ import {
 } from "../store/slices/todos";
 import { useAlert } from "react-alert";
 import Box from "@material-ui/core/Box";
+import { TodosActionTypes } from "../store/action-types";
+import { RESET_STATE } from "@redux-offline/redux-offline/lib/constants";
 
 const Todos = () => {
   const alert = useAlert();
@@ -47,12 +47,34 @@ const Todos = () => {
       title: "tarefa " + data_id,
     };
 
-    dispatch(createTodo({ postData: todo, data_id, syncronization_id }));
-    alert.success("nova tarefa criada!", { position: "bottom center" });
+    // dispatch(
+    //   createTodo({
+    //     postData: todo,
+    //     data_id,
+    //     syncronization_id,
+    //     onSuccess: alert.success,
+    //     onError: alert.error,
+    //     onInfo: alert.info,
+    //   })
+    // );
+    dispatch({
+      type: TodosActionTypes.CREATE_TODO_STARTED,
+      payload: {
+        postData: todo,
+        data_id,
+        syncronization_id,
+        onSuccess: alert.success,
+        onError: alert.error,
+        onInfo: alert.info,
+      },
+    });
+    // alert.success("nova tarefa criada!", { position: "bottom center" });
   };
 
   const handleTodosReset = () => {
-    dispatch(resetTodos());
+    dispatch({
+      type: RESET_STATE,
+    });
     alert.error("Tarefa excluída!", { position: "bottom center" });
   };
 

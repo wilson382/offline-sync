@@ -6,9 +6,8 @@ import Typography from "@material-ui/core/Typography";
 import { BsCloudArrowUpFill } from "react-icons/bs";
 import Badge from "@material-ui/core/Badge";
 import InternetConection from "./InternetConection";
-import { useSelector } from "react-redux";
-import { selectTotalQueues } from "../store/slices/queues";
 import { useHistory } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const useStyles = makeStyles((theme) => ({
   drawerHeader: {
@@ -39,7 +38,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Drawer() {
   const history = useHistory();
-  const totalQueues = useSelector(selectTotalQueues);
+  const { totalQueues } = useSelector((state) => {
+    return {
+      totalQueues: state.offline.outbox.length,
+    };
+  });
 
   const classes = useStyles();
 
@@ -47,16 +50,33 @@ export default function Drawer() {
     <div className={classes.grow}>
       <InternetConection />
 
-      <AppBar style={{ marginLeft: -1, marginTop: -1 }} position="static" color="secondary">
+      <AppBar
+        style={{ marginLeft: -1, marginTop: -1 }}
+        position="static"
+        color="secondary"
+      >
         <Toolbar>
-          <Typography onClick={() => history.push("/")} className={classes.title2} variant="h6" noWrap>
+          <Typography
+            onClick={() => history.push("/")}
+            className={classes.title2}
+            variant="h6"
+            noWrap
+          >
             Pagina inicial
           </Typography>
 
           {+totalQueues > 0 && (
             <div>
-              <IconButton aria-haspopup="true" onClick={() => history.push("/queues")} color="inherit">
-                <Badge overlap="rectangular" badgeContent={+totalQueues} color="primary">
+              <IconButton
+                aria-haspopup="true"
+                onClick={() => history.push("/queues")}
+                color="inherit"
+              >
+                <Badge
+                  overlap="rectangular"
+                  badgeContent={+totalQueues}
+                  color="primary"
+                >
                   <BsCloudArrowUpFill size="1.1em" />
                 </Badge>
               </IconButton>
