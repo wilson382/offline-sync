@@ -3,6 +3,8 @@ import { es } from "@nodes/date-fns/locale";
 import uuid from "@nodes/react-uuid";
 import { localStorageToken } from "@/config";
 
+export * from "./network";
+
 export function printDate(date, formatStr = "dd-MMM-yy") {
   if (!date) return "Ninguno Aun";
   return format(date, formatStr, { locale: es });
@@ -11,9 +13,12 @@ export function printDate(date, formatStr = "dd-MMM-yy") {
 export function spanishErrors(error) {
   let $arr = [];
   $arr["Network Error"] = "Error Conexion de Internet!";
-  $arr["timeout of 30000ms exceeded"] = "Tiempo de espera de 30 segundos excedido!";
-  $arr["timeout of 60000ms exceeded"] = "Tiempo de espera de 60 segundos excedido!";
-  $arr["timeout of 90000ms exceeded"] = "Tiempo de espera de 90 segundos excedido!";
+  $arr["timeout of 30000ms exceeded"] =
+    "Tiempo de espera de 30 segundos excedido!";
+  $arr["timeout of 60000ms exceeded"] =
+    "Tiempo de espera de 60 segundos excedido!";
+  $arr["timeout of 90000ms exceeded"] =
+    "Tiempo de espera de 90 segundos excedido!";
 
   return $arr[error] ? $arr[error] : error;
 }
@@ -31,7 +36,8 @@ export function getLocalToken() {
 export function newDate(input) {
   if (input === "1970-01-01") return null;
   if (!input) return console.log("Input date not set!");
-  if (input.length !== 10) return console.log(`wrong input provided for newDate ${input}`);
+  if (input.length !== 10)
+    return console.log(`wrong input provided for newDate ${input}`);
   let parts = input.split("-");
   return new Date(parts[0], parts[1] - 1, parts[2]);
 }
@@ -121,7 +127,10 @@ export function getUniqueID(dataType = null) {
 export function searchArray(array, searchText = "", max = 15) {
   let filtered = array;
 
-  filtered = filtered.filter((m) => RemoveAccents(m.name).toUpperCase().indexOf(searchText.toUpperCase()) >= 0);
+  filtered = filtered.filter(
+    (m) =>
+      RemoveAccents(m.name).toUpperCase().indexOf(searchText.toUpperCase()) >= 0
+  );
   return filtered.slice(0, max);
 }
 
@@ -131,7 +140,12 @@ export function newSearchArray(array, searchText = "", max = 15) {
 
   const newSearch = indentifySearchType(searchText);
 
-  filtered = filtered.filter((m) => RemoveAccents(m.loanSearch).toUpperCase().indexOf(newSearch.toUpperCase()) >= 0);
+  filtered = filtered.filter(
+    (m) =>
+      RemoveAccents(m.loanSearch)
+        .toUpperCase()
+        .indexOf(newSearch.toUpperCase()) >= 0
+  );
   return filtered.slice(0, max);
 }
 
@@ -227,7 +241,9 @@ export function getApplyPaymentsProp(data, loan, common, payment_id) {
 
   const syncProps = {
     data_id: payment_id,
-    syncronization_id: `R${common.creditor_id}_${common.collect_date}_${getUniqueID()}`,
+    syncronization_id: `R${common.creditor_id}_${
+      common.collect_date
+    }_${getUniqueID()}`,
     queueTime: Math.floor(Date.now()),
     endPoint: "/bgsync/cobro/payment/create",
     syncType: "createPayment",
@@ -255,7 +271,8 @@ export function getLoansBreakDown(dbLoans) {
   if (dbLoans) {
     const loansLength = dbLoans.length;
     for (var i = 0; i < loansLength; i++) {
-      const { collect_day, wPayment, balance, current_week, npayments } = dbLoans[i];
+      const { collect_day, wPayment, balance, current_week, npayments } =
+        dbLoans[i];
 
       if (+balance > 0) {
         loansBreakDown.balanceTotal += balance;
@@ -302,16 +319,24 @@ export function getSpanishDays(day) {
 }
 
 export function calcNewCompleted(loan, paymentAmount) {
-  return loan.npayments - Math.ceil((loan.balance - paymentAmount) / loan.wPayment);
+  return (
+    loan.npayments - Math.ceil((loan.balance - paymentAmount) / loan.wPayment)
+  );
 }
 
 export function calcNewLoanStatus(loan, paymentAmount) {
   let { statusText, statusAmount } = loan;
-  if (loan.paymentAmount + paymentAmount === 0) return { statusText, statusAmount };
-  if (loan.balance - paymentAmount === 0) return { statusText: "Saldado", statusAmount: 0 };
+  if (loan.paymentAmount + paymentAmount === 0)
+    return { statusText, statusAmount };
+  if (loan.balance - paymentAmount === 0)
+    return { statusText: "Saldado", statusAmount: 0 };
 
   if (loan.statusText !== "Vencido") {
-    statusAmount = loan.pending * loan.wPayment - loan.paymentAmount - paymentAmount - loan.incomplete;
+    statusAmount =
+      loan.pending * loan.wPayment -
+      loan.paymentAmount -
+      paymentAmount -
+      loan.incomplete;
     if (statusAmount < 0) {
       statusText = "Adelanto";
     } else if (statusAmount > 0) {
@@ -462,8 +487,10 @@ export function RemoveAccents(str) {
     return;
   }
 
-  var accents = "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
-  var accentsOut = "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
+  var accents =
+    "ÀÁÂÃÄÅàáâãäåÒÓÔÕÕÖØòóôõöøÈÉÊËèéêëðÇçÐÌÍÎÏìíîïÙÚÛÜùúûüÑñŠšŸÿýŽž";
+  var accentsOut =
+    "AAAAAAaaaaaaOOOOOOOooooooEEEEeeeeeCcDIIIIiiiiUUUUuuuuNnSsYyyZz";
   str = str.split("");
   var strLen = str.length;
   var i, x;
