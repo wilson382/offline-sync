@@ -35,6 +35,10 @@
   "scripts": {
     "build-sw": "node ./src/sw-build.js",
     "test": "jest",
+    "build-ver": "node ./generate-build-version.js",
+    "build:testing": "vite build -m testing && npm run build-sw",
+    "deploy:testing": "npm run build:testing && firebase deploy --only hosting:testing",
+    "preview:testing": "npm run build:testing && firebase hosting:channel:deploy --only testing --expires 30d",
     "serve": "vite preview",
     "start": "vite",
     "build": "vite build && npm run build-sw"
