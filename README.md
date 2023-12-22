@@ -1,68 +1,130 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Main Changes
 
-## Available Scripts
+So first i've detect that you are not using redux-saga, redux-offline no have compatibility with new RTK Query redux ( slice and other stuffs ) but we can merge the both as i did on the project
 
-In the project directory, you can run:
+[You read more here about Redux Saga](https://redux-saga.js.org/)
 
-### `npm start`
+When internet goes down and app detect that, we start a timeout function with redux saga to periodic check when internet get back, when detect online again that timeout function stop running.
 
-Runs the app in the development mode.<br />
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+## How to create a new offline redux
 
-The page will reload if you make edits.<br />
-You will also see any lint errors in the console.
+You just need to create all described bellow items to post functions where you need to save at outbox, any others offline functions you just do what you already know and then it will be persisted, i mean about you not need redux-saga for get operations
 
-### `npm test`
+### 1. Creates a action-type
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+[Action Types Folder](./src/store/action-types)
 
-### `npm run build`
+```ts
+export const TodosActionTypes = {
+  CREATE_TODO_STARTED: "[TODO] CREATE_TODO_STARTED",
+  CREATE_TODO_SUCCESS: "[TODO] CREATE_TODO_SUCCESS",
+  CREATE_TODO_ERROR: "[TODO] CREATE_TODO_ERROR",
+  CREATE_TODO_OFFLINE: "[TODO] CREATE_TODO_OFFLINE",
+};
+```
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
+A good practise, never forget to export at [index.js](./src/store/action-types/index.js)
 
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
+```ts
+export * from "./network";
+export * from "./todos";
+```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. Create Async Thunk to dispatch Action
 
-### `npm run eject`
+[Slice Folder](./src/store/slices)
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+```ts
+export const thunkTodosFetch = createAsyncThunk("todos/fetch", async () => {
+  const { data } = await axios.get(`${endPoint}/todos`);
+  return data;
+});
+```
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+A good practise, never forget to export at [index.js](./src/store/slices/index.js)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+```ts
+import queuesSlice from "./queues";
+import todosSlice from "./todos";
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+export default [todosSlice, queuesSlice];
+```
 
-## Learn More
+### 3. Create a Redux Sagas
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Here you need to take a look at given example [Todo Sagas](./src/store/sagas/todos/index.js)
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Inside [Todo Folder](./src/store/sagas/todos)
 
-### Code Splitting
+We've three files:
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/code-splitting
+### [Reducer - reducer.js](./src/store/sagas/todos/reducer.js)
 
-### Analyzing the Bundle Size
+- Here you add your reducer configuration, when you are using sagas you must not create a slice reducer, you need to use like given example so i've merged slice actions with redux saga actions.
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size
+#### Slice Actions at Redux Saga Reducer
 
-### Making a Progressive Web App
+![Slice Actions at Redux Saga Reducer](./images/reducer-slice-redux-saga.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app
+#### Reducer for Redux Saga Action Keys
 
-### Advanced Configuration
+![Reducer for Redux Saga Action Keys](./images/reducer-redux-saga.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/advanced-configuration
+Also you _MUST_ need to register your redicer at [index.js](./src/store/index.js)
 
-### Deployment
+![Alt text](./images/reducer-example.png)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/deployment
+### [Sagas - create-todo.js](./src/store/sagas/todos/create-todo.js)
 
-### `npm run build` fails to minify
+- Here you add your custom execute functions, and run any function that you need to run
+- Importante to know: that file uses [_Generator Functions_](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function*)
 
-This section has moved here: https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify
+NEVER FORGET TO REGISTER Redux Saga Operation at both files
+[your-reducer/index.js](./src/store/sagas/todos/index.js)
+[index.js](./src/store/sagas/index.js)
+
+You had three options to register when redux saga will run, you read more here
+[Take Every](https://redux-saga.js.org/docs/api/#takeeverychannel-saga-args)
+[Take Latest](https://redux-saga.js.org/docs/api/#takelatestpattern-saga-args)
+[Take Leading](https://redux-saga.js.org/docs/api/#takeleadingpattern-saga-args)
+
+Almost time you will use Take Latest, and some specific cases a Take Every.
+
+### 4. Dispatch a Redux Function
+
+So when you need to dispatch a function you will call redux hook `const dispatch = useDispatch();`
+
+Dispatch example [Todo.jsx](./src/pages/Todos.jsx)
+
+```ts
+dispatch({
+  type: TodosActionTypes.CREATE_TODO_STARTED,
+  payload: {
+    postData: todo,
+    data_id,
+    syncronization_id,
+    onSuccess: alert.success,
+    onError: alert.error,
+    onInfo: alert.info,
+  },
+});
+```
+
+## E-mail Questions
+
+[Question] src/services, What are services, are they endpoints, do i need a service for every endpoints or reducer?
+
+You decide, i recommend you to create a service and put inside their methods to be more organized
+
+[Question] //toast is not defined store/middleware/netowkr
+
+Ignore that toast, did not exist in your project
+
+[Error] Todos are not created if turn off wifi and quickly try to create a todo.
+
+The browsers has a limit, so we can't know when exactly internets goes down until if we setup a timeout to check ( that's not good for a long term ), but if any user try to do an action, app has a middleware to detect that and save on outbox, then change to offline status and notify user about it.
+
+Also that's not a rule for every Browser, like when you use "Opera" we had fast results when connect and disconnect internet connection.
+
+Result when add a TODO without internet at Chrome Browser.
+![Offline TODO Added](./images/offline-added-todo.png)
